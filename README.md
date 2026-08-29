@@ -59,16 +59,18 @@ There is no framework, tracker, or build step. GitHub Pages serves the files fro
 
 ```
 iftbc/
-├── index.html              Page structure and slide copy
+├── index.html              Page structure, slide copy, and SEO meta
 ├── styles.css              Layout, scroll-snap, and fade transitions
 ├── site.js                 Contacts, slide visibility, reduced-motion
 ├── config.js               Branding and contact values (edit this)
+├── robots.txt              Search-engine crawl rules
+├── sitemap.xml             Canonical URL list for crawlers
 ├── CNAME                   GitHub Pages custom domain: iftbc.com
 ├── .nojekyll               Serve files as-is (no Jekyll)
 ├── .gitignore
 ├── README.md
 └── assets/
-    ├── logo.jpeg           On-page logo
+    ├── logo.jpeg           On-page logo and Open Graph image
     ├── iftbc_favicon.png   Favicon
     └── IFTBC_VIDEO.mp4     Original looping brand film (not used on the live page)
 ```
@@ -163,6 +165,26 @@ Pushing to `main` is enough. There is no GitHub Actions workflow.
 Do not point these records at Hostinger parking IPs, and do not use Hostinger SSL while the A records point at GitHub. GitHub issues the certificate for `iftbc.com` and `www.iftbc.com`.
 
 `iftbc.com.np` is not wired yet. When that domain is active, it can redirect to `iftbc.com` or become the GitHub Pages custom domain. GitHub Pages supports only one custom domain per site.
+
+---
+
+## Search engines (SEO)
+
+The homepage is crawlable without JavaScript. It includes:
+
+- Unique title and meta description
+- Canonical URL `https://iftbc.com/`
+- Open Graph and Twitter card tags
+- JSON-LD (`ProfessionalService`) for IFTBC, Kathmandu, phone, and Facebook
+- [`robots.txt`](robots.txt) allowing all crawlers
+- [`sitemap.xml`](sitemap.xml)
+
+Indexing is not instant. After the sitemap is live, ask Google and Bing to crawl the site:
+
+1. [Google Search Console](https://search.google.com/search-console) — add `https://iftbc.com`, verify the domain (DNS TXT or the HTML file method), then submit `https://iftbc.com/sitemap.xml`.
+2. [Bing Webmaster Tools](https://www.bing.com/webmasters) — import the Search Console property or add the site and submit the same sitemap.
+
+External links (Facebook, directories, partners) help discovery more than on-page tags alone.
 
 ---
 

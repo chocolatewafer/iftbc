@@ -4,7 +4,7 @@
   const contacts = document.getElementById("contacts");
   const slides = document.querySelectorAll(".slide");
 
-  document.title = config.name || document.title;
+  document.title = config.title || config.name || document.title;
 
   const description = document.querySelector('meta[name="description"]');
   if (description && config.description) {

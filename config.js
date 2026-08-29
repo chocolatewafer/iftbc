@@ -10,7 +10,9 @@
 
 window.SITE_CONFIG = {
   name: "Innova Food Tech Business Consultancy (IFTBC)",
-  description: "Global Food Technology Solutions Consulting from Nepal",
+  title: "IFTBC | Food Technology Consulting from Nepal",
+  description: "IFTBC (Innova Food Tech Business Consultancy) provides food manufacturing, quality, product development, and market-entry consulting from Kathmandu, Nepal to clients worldwide.",
+  canonical: "https://iftbc.com/",
 
   video: "assets/IFTBC_VIDEO.mp4",
   logo: "assets/logo.jpeg",
