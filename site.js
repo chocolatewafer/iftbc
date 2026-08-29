@@ -11,16 +11,29 @@
     description.setAttribute("content", config.description);
   }
 
-  if (config.favicon) {
+  function isAssetPath(value) {
+    return typeof value === "string" && /^assets\/[A-Za-z0-9._-]+$/.test(value);
+  }
+
+  if (isAssetPath(config.favicon)) {
     const icon = document.querySelector('link[rel="icon"]');
     const apple = document.querySelector('link[rel="apple-touch-icon"]');
     if (icon) icon.href = config.favicon;
     if (apple) apple.href = config.favicon;
   }
 
-  if (config.logo && logo) {
-    logo.src = config.logo;
-    logo.alt = config.name || logo.alt;
+  if (logo) {
+    logo.draggable = false;
+    logo.addEventListener("contextmenu", function (event) {
+      event.preventDefault();
+    });
+    logo.addEventListener("dragstart", function (event) {
+      event.preventDefault();
+    });
+    if (isAssetPath(config.logo)) {
+      logo.src = config.logo;
+      logo.alt = config.name || logo.alt;
+    }
   }
 
   const icons = {
@@ -36,24 +49,39 @@
     return value != null && String(value).trim() !== "";
   }
 
+  function httpsUrlOnHosts(raw, hosts) {
+    try {
+      const url = new URL(raw);
+      if (url.protocol !== "https:") return "";
+      if (hosts.indexOf(url.hostname) === -1) return "";
+      return url.href;
+    } catch (err) {
+      return "";
+    }
+  }
+
   function whatsappHref(value) {
     const raw = String(value).trim();
-    if (/^https?:\/\//i.test(raw)) return raw;
+    if (/^https?:\/\//i.test(raw)) {
+      return httpsUrlOnHosts(raw, ["wa.me", "api.whatsapp.com", "www.whatsapp.com"]);
+    }
     const digits = raw.replace(/\D/g, "");
     return digits ? "https://wa.me/" + digits : "";
   }
 
   function phoneHref(value) {
     const raw = String(value).trim();
-    if (/^tel:/i.test(raw)) return raw;
-    const number = raw.replace(/[^\d+]/g, "");
-    return number ? "tel:" + number : "";
+    const number = raw.replace(/^tel:/i, "").replace(/[^\d+]/g, "");
+    return /^\+?\d+$/.test(number) ? "tel:" + number : "";
   }
 
   function facebookHref(value) {
     const raw = String(value).trim();
-    if (/^https?:\/\//i.test(raw)) return raw;
-    return "https://www.facebook.com/" + raw.replace(/^@/, "");
+    if (/^https?:\/\//i.test(raw)) {
+      return httpsUrlOnHosts(raw, ["facebook.com", "www.facebook.com", "m.facebook.com", "web.facebook.com"]);
+    }
+    const handle = raw.replace(/^@/, "").replace(/[^A-Za-z0-9._/]/g, "");
+    return handle ? "https://www.facebook.com/" + handle : "";
   }
 
   const items = [
@@ -64,23 +92,21 @@
     return item.href;
   });
 
-  if (items.length) {
+  if (items.length && contacts) {
     contacts.hidden = false;
-    contacts.innerHTML = items
-      .map(function (item) {
-        return (
-          '<a class="contact" href="' +
-          item.href +
-          '" aria-label="' +
-          item.label +
-          '"' +
-          (item.key === "phone" ? "" : ' target="_blank" rel="noopener noreferrer"') +
-          ">" +
-          icons[item.key] +
-          "</a>"
-        );
-      })
-      .join("");
+    contacts.replaceChildren();
+    items.forEach(function (item) {
+      const link = document.createElement("a");
+      link.className = "contact";
+      link.href = item.href;
+      link.setAttribute("aria-label", item.label);
+      if (item.key !== "phone") {
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+      }
+      link.insertAdjacentHTML("afterbegin", icons[item.key]);
+      contacts.appendChild(link);
+    });
   }
 
   if (!slides.length) return;

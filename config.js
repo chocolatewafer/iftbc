@@ -9,7 +9,7 @@
    ============================================================================= */
 
 window.SITE_CONFIG = {
-  name: "Innova Food Tech Business Consultancy (IFBTC)",
+  name: "Innova Food Tech Business Consultancy (IFTBC)",
   description: "Global Food Technology Solutions Consulting from Nepal",
 
   video: "assets/IFTBC_VIDEO.mp4",
