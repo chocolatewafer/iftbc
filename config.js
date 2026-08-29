@@ -16,7 +16,7 @@ window.SITE_CONFIG = {
   logo: "assets/logo.jpeg",
   favicon: "assets/iftbc_favicon.png",
 
-  whatsapp: null,
-  phone: null,
-  facebook: null
+  whatsapp: "+977 9841689111",
+  phone: "+977 9841689111",
+  facebook: "https://www.facebook.com/sanjay.nidhi.9/"
 };

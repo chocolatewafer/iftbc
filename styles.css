@@ -46,11 +46,10 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
   z-index: 2;
   display: flex;
-  justify-content: center;
-  padding: max(1.25rem, env(safe-area-inset-top)) 1.25rem 0;
+  justify-content: flex-start;
+  padding: max(0.85rem, env(safe-area-inset-top)) 0 0 max(0.85rem, env(safe-area-inset-left));
   pointer-events: none;
 }
 
@@ -58,11 +57,11 @@ body {
   display: block;
   width: auto;
   height: auto;
-  max-width: min(22rem, 78vw);
-  max-height: 22vh;
+  max-width: min(9rem, 28vw);
+  max-height: 12vh;
   object-fit: contain;
-  border-radius: 1rem;
-  box-shadow: 0 0.75rem 2.5rem rgba(0, 0, 0, 0.4);
+  border-radius: 0.7rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.4);
   pointer-events: auto;
 }
 
@@ -112,11 +111,17 @@ body {
   outline-offset: 3px;
 }
 
+@media (max-aspect-ratio: 16/10), (orientation: portrait) {
+  .bg-video {
+    object-fit: contain;
+  }
+}
+
 @media (max-width: 640px) {
   .logo {
-    max-width: min(18rem, 82vw);
-    max-height: 16vh;
-    border-radius: 0.8rem;
+    max-width: min(6.5rem, 34vw);
+    max-height: 10vh;
+    border-radius: 0.55rem;
   }
 
   .contact {
@@ -127,7 +132,8 @@ body {
 
 @media (max-height: 500px) and (orientation: landscape) {
   .logo {
-    max-height: 28vh;
+    max-width: min(6rem, 22vw);
+    max-height: 18vh;
   }
 
   .contacts {
