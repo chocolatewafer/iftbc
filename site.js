@@ -1,15 +1,8 @@
 (function () {
   const config = window.SITE_CONFIG || {};
-  const video = document.getElementById("bg-video");
   const logo = document.getElementById("logo");
   const contacts = document.getElementById("contacts");
-  const sampleCanvas = document.createElement("canvas");
-  const sampleCtx = sampleCanvas.getContext("2d", {
-    alpha: false,
-    willReadFrequently: true
-  });
-  sampleCanvas.width = 8;
-  sampleCanvas.height = 8;
+  const slides = document.querySelectorAll(".slide");
 
   document.title = config.name || document.title;
 
@@ -28,12 +21,6 @@
   if (config.logo && logo) {
     logo.src = config.logo;
     logo.alt = config.name || logo.alt;
-  }
-
-  if (config.video && video) {
-    const source = video.querySelector("source");
-    if (source) source.src = config.video;
-    video.load();
   }
 
   const icons = {
@@ -73,7 +60,9 @@
     { key: "whatsapp", label: "WhatsApp", href: enabled(config.whatsapp) ? whatsappHref(config.whatsapp) : "" },
     { key: "phone", label: "Phone", href: enabled(config.phone) ? phoneHref(config.phone) : "" },
     { key: "facebook", label: "Facebook", href: enabled(config.facebook) ? facebookHref(config.facebook) : "" }
-  ].filter((item) => item.href);
+  ].filter(function (item) {
+    return item.href;
+  });
 
   if (items.length) {
     contacts.hidden = false;
@@ -94,71 +83,30 @@
       .join("");
   }
 
-  function keepPlaying() {
-    if (!video) return;
-    video.muted = true;
-    video.playsInline = true;
-    const play = video.play();
-    if (play && typeof play.catch === "function") {
-      play.catch(function () {});
-    }
+  if (!slides.length) return;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) {
+    slides.forEach(function (slide) {
+      slide.classList.add("is-visible");
+    });
+    return;
   }
 
-  function paintFrameBase() {
-    if (!video || !sampleCtx || !video.videoWidth) return;
+  const observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.45) {
+          entry.target.classList.add("is-visible");
+        } else if (!entry.isIntersecting) {
+          entry.target.classList.remove("is-visible");
+        }
+      });
+    },
+    { threshold: [0.45, 0.6] }
+  );
 
-    sampleCtx.drawImage(video, 0, 0, 8, 8);
-
-    // Corners of the current frame — used as the page base on taller phones.
-    const corners = [
-      sampleCtx.getImageData(0, 0, 1, 1).data,
-      sampleCtx.getImageData(7, 0, 1, 1).data,
-      sampleCtx.getImageData(0, 7, 1, 1).data,
-      sampleCtx.getImageData(7, 7, 1, 1).data
-    ];
-    let r = 0;
-    let g = 0;
-    let b = 0;
-    for (let i = 0; i < corners.length; i += 1) {
-      r += corners[i][0];
-      g += corners[i][1];
-      b += corners[i][2];
-    }
-    const color =
-      "rgb(" +
-      Math.round(r / corners.length) +
-      "," +
-      Math.round(g / corners.length) +
-      "," +
-      Math.round(b / corners.length) +
-      ")";
-
-    document.documentElement.style.backgroundColor = color;
-    document.body.style.backgroundColor = color;
-    document.documentElement.style.setProperty("--navy", color);
-
-    const theme = document.querySelector('meta[name="theme-color"]');
-    if (theme) theme.setAttribute("content", color);
-  }
-
-  if (video) {
-    video.addEventListener("loadeddata", function () {
-      keepPlaying();
-      paintFrameBase();
-    });
-    let lastSample = 0;
-    video.addEventListener("playing", paintFrameBase);
-    video.addEventListener("timeupdate", function () {
-      const now = Date.now();
-      if (now - lastSample < 250) return;
-      lastSample = now;
-      paintFrameBase();
-    });
-    video.addEventListener("pause", keepPlaying);
-    document.addEventListener("visibilitychange", function () {
-      if (!document.hidden) keepPlaying();
-    });
-    window.addEventListener("resize", paintFrameBase);
-    keepPlaying();
-  }
+  slides.forEach(function (slide) {
+    observer.observe(slide);
+  });
 })();
