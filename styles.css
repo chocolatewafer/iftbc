@@ -24,7 +24,6 @@ html {
 html,
 body {
   min-height: 100%;
-  overflow-x: hidden;
   background-color: var(--navy);
   color: var(--icon);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -69,8 +68,6 @@ body {
     max(6.5rem, calc(env(safe-area-inset-top) + 5.5rem))
     1.5rem
     max(6.5rem, calc(env(safe-area-inset-bottom) + 5.5rem));
-  overflow-x: hidden;
-  overflow-y: auto;
   scroll-snap-align: start;
   scroll-snap-stop: always;
   text-align: center;
